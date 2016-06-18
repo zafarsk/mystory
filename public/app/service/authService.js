@@ -28,7 +28,7 @@ angular.module('authService', [])
                 return $http.get("/api/me");
             }
             else
-                return $q.reject({ message: "User has no token." })
+                return $q.reject({ message: "User has no token." });
         }
         return authFactory;
     })
@@ -41,11 +41,15 @@ angular.module('authService', [])
         }
 
         authTokenFactory.setToken = function (token) {
+            
             if (token)
-                return $window.localStorage.setItem('token', token)
-
+            {              
+                return $window.localStorage.setItem('token', token);
+            }
             else
-                return $window.localStorage.removeItem('token')
+            {
+                return $window.localStorage.removeItem('token');
+            }
         }
         return authTokenFactory;
     })

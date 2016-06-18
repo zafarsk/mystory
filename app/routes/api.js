@@ -27,13 +27,20 @@ module.exports = function (app, express) {
          username : req.body.username,
          password :  req.body.password 
       });
+
+      var token = createToken(user);
       
       user.save(function (err) {
           if(err){
               res.send(err);
               return;
           }
-          res.json({message:"User is created."})
+          
+          res.json({
+              success: true,
+              message:"User is created.",
+              token: token    
+        });
       });
       
    });
@@ -49,6 +56,7 @@ module.exports = function (app, express) {
    });
    
    api.post('/login',function(req,res){
+      
       User.findOne({
           username : req.body.username
       })
@@ -61,6 +69,7 @@ module.exports = function (app, express) {
              res.send({message: "User not found."});
          } 
          else if(user){
+             
              var validatePassword = user.comparePassword(req.body.password);
              
              if(!validatePassword){
@@ -83,7 +92,7 @@ module.exports = function (app, express) {
    
    api.use(function(req,res,next){
       console.log("Some one logged in.");
-      var token = req.body.token || req.param('token') || req.headers['x-access-token'];
+      var token = req.body.token || req.params['token'] || req.headers['x-access-token'];
       
       if(token){
           jsonWebToken.verify(token,secretKey,function(err,decoded){
@@ -118,6 +127,11 @@ module.exports = function (app, express) {
               res.json({success: true, message:"New Story created."})
            });
         });
+
+    api.get('/me', function(req, res) {
+		res.send(req.decoded);
+	});
+
    
    return api;  
 };
