@@ -23,7 +23,7 @@ angular.module('userController',['userService'])
 
 				$window.localStorage.setItem('token', response.data.token);
 				$location.path('/');
-			})
+			});
 	}
 
-})
+});
